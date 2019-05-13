@@ -1,0 +1,48 @@
+﻿SRE Team Charter Template
+Last Updated: 2019-04-01
+	
+
+	Company Name: Foobar
+	
+
+	Team Name: Kitchen Sink SRE
+	
+
+	Collaborators: foo, bar
+	
+
+	Approvers: approver1, approver2
+	
+
+	Status: Draft
+	
+
+	
+
+
+
+Who Are We
+<Add a sentence describing the technology environment (~1 line), the customers and offering of the team, as well as the scope of your team's SRE engagement or special expertise.>
+
+
+Services Supported
+<Describe the (group of) services your team supports to further define your team's scope. Hint: You will want to use the same service names in your postmortems for data analysis>
+
+
+How Do We Invest Our Time
+<Deciding the scope of work will help define your roadmap of how you can achieve and maintain your goals in the long run.>
+
+
+Team Values
+<Communicate your team values in a clear manner. They will influence how team members interact with each other and how your team is perceived by others.>
+
+
+
+
+DO NOT REMOVE THIS AND THE CONTENT BELOW
+sredocs charter template version 0.1
+Short link to this template: xx[a]
+
+
+
+

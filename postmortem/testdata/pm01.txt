@@ -1,0 +1,102 @@
+﻿Postmortem Template
+Short Link: http://example.com/yep
+	
+
+	Last Updated: 2019-04-01
+	
+
+	Team Name: Kitchen Sink SRE
+	
+
+	Collaborators: foo, bar
+	
+
+	Status: Published
+	
+
+	
+
+Executive Summary
+Minor, Medium or High Severity: High
+	
+
+	Impact: Global pizza delivery outage
+	
+
+	Incident Description: Long description here.
+	
+
+	
+
+Additional metadata
+Time to detect in minutes: 10
+	
+
+	Time to initiate response in minutes: 15
+	
+
+	Time to mitigate in minutes: 60
+	
+
+	Link to impacted SLO: http://example.com/slodashboard
+	
+
+	Impacted products: PizzaDelivery
+	
+
+	First known impacted service: PizzaBE
+	
+
+	Known services in the blast radius: PizzaFE
+	
+
+	Noteworthy customers impacted: N/A
+	
+
+	Deploy, Cloud or Other Trigger: Deploy
+	
+
+	
+
+Action Items
+Short Description
+	Owner
+	Initial Priority
+	Tracking Link
+	Test1
+	Foo
+	High
+	https://lala
+	Test2
+	bar
+	Medium
+	http://bla/bla/yup.php
+	
+
+Background
+* <x.>
+
+
+Things that went well
+* <y>
+
+
+Where we got lucky
+* <z.>
+
+
+Things that could be improved
+* <p.>
+
+
+Timeline
+<e.g IRC/slack logs>
+
+
+
+
+
+
+DO NOT REMOVE THIS AND THE CONTENT BELOW
+sredocs postmortem template version 0.1
+Short link to this template: xx
