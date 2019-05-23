@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"regexp"
 	"strings"
@@ -11,9 +12,10 @@ import (
 
 type Parser interface {
 	CompileRegex(fields []string) ([]*regexp.Regexp, error)
-	Parse(fields []string, b []byte) (string, error)
+	Parse(fields []string, b []byte) (*bytes.Buffer, error)
 	CSVHeader(regexps []*regexp.Regexp) []string
 	NamedGroup(field string) string
+	Save(buf *bytes.Buffer, filename string) error
 }
 
 type DefaultParser struct {
@@ -46,16 +48,13 @@ func (p *DefaultParser) CompileRegex(fields []string) ([]*regexp.Regexp, error) 
 }
 
 // Parse parses fields out of a slice of bytes into CSV.
-func (p *DefaultParser) Parse(fields []string, b []byte) (string, error) {
+func (p *DefaultParser) Parse(fields []string, b []byte) (*bytes.Buffer, error) {
 	regexps, err := p.CompileRegex(fields)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	h := p.CSVHeader(regexps)
-	records := [][]string{
-		h,
-	}
+	records := [][]string{p.CSVHeader(regexps)}
 	var f []string
 	for _, r := range regexps {
 		m := r.FindSubmatch(b)
@@ -70,17 +69,14 @@ func (p *DefaultParser) Parse(fields []string, b []byte) (string, error) {
 	records = append(records, f)
 
 	var buf bytes.Buffer
+	// This makes sure records are parsable CSV.
 	w := csv.NewWriter(&buf)
-	for _, record := range records {
-		if err := w.Write(record); err != nil {
-			log.Println(err)
-		}
-	}
-	w.Flush()
+	w.WriteAll(records)
 	if err := w.Error(); err != nil {
 		log.Println(err)
 	}
-	return buf.String(), nil
+
+	return &buf, nil
 }
 
 // CSVHeader builds a slice out of named groups within a list of regexes.
@@ -96,4 +92,13 @@ func (p *DefaultParser) CSVHeader(regexps []*regexp.Regexp) []string {
 func (p *DefaultParser) NamedGroup(field string) string {
 	r := strings.NewReplacer(" ", "", ":", "", ",", "")
 	return r.Replace(strings.ToLower(field))
+}
+
+// Save saves a buffer of bytes to a file.
+func (p *DefaultParser) Save(buf *bytes.Buffer, filename string) error {
+	err := ioutil.WriteFile(filename, buf.Bytes(), 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }

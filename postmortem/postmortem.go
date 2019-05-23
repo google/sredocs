@@ -1,6 +1,7 @@
 package postmortem
 
 import (
+	"bytes"
 	"github.com/google/sredocs/parser"
 	"log"
 )
@@ -45,12 +46,21 @@ var (
 		triggerStr, backgroundStr, wellStr, luckyStr, improvedStr, timelineStr, footerStr}
 )
 
-func Parse(fields []string, b []byte) (string, error) {
+func Parse(fields []string, b []byte) (*bytes.Buffer, error) {
 	log.Println("postmortem")
 	p := &parser.DefaultParser{}
 	csv, err := p.Parse(fields, b)
 	if err != nil {
-		return csv, err
+		return nil, err
 	}
 	return csv, nil
+}
+
+func Save(b *bytes.Buffer, filename string) error {
+	p := &parser.DefaultParser{}
+	err := p.Save(b, filename)
+	if err != nil {
+		return err
+	}
+	return nil
 }

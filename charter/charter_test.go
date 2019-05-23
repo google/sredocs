@@ -1,4 +1,4 @@
-package postmortem
+package charter
 
 import (
 	"bytes"
@@ -13,21 +13,14 @@ type table struct {
 	value string
 }
 
-func TestPM01(t *testing.T) {
-	// Order must match Fields order for PM01.
+func TestCharter01(t *testing.T) {
+	// Order must match Fields order for Charter01.
 	tables := []table{
-		{"shortlink", "http://example.com/yep"},
 		{"lastupdated", "2019-04-01"},
-		{"teamname", "Kitchen Sink SRE"},
-		{"collaborators", "foo, bar"},
-		{"status", "Published"},
-		{"severity", "High"},
-		{"impact", "Global pizza delivery outage"},
-		{"description", "Long description here."},
 		// TODO(stratus): Include all fields.
 	}
 
-	testParser(t, "testdata/pm01.txt", tables)
+	testParser(t, "testdata/charter01.txt", tables)
 }
 
 func testParser(t *testing.T, pmfile string, tables []table) {
@@ -59,7 +52,7 @@ func toCSV(b *bytes.Buffer) ([][]string, error) {
 	}
 	// 1st entry is the header with field names.
 	if len(records) != 2 {
-		return nil, fmt.Errorf("Multiple PMs in a single file?")
+		return nil, fmt.Errorf("Multiple charters in a single file?")
 	}
 	return records, nil
 }

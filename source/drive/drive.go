@@ -1,72 +1,22 @@
 package drive
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"os"
 
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v3"
 )
 
-// Retrieve a token, saves the token, then returns the generated client.
-func getClient(config *oauth2.Config) *http.Client {
-	// The file token.json stores the user's access and refresh tokens, and is
-	// created automatically when the authorization flow completes for the first
-	// time.
-	tokFile := "token.json"
-	tok, err := tokenFromFile(tokFile)
+func search(srv *drive.Service, query string) ([]*drive.File, error) {
+	r, err := srv.Files.List().Spaces("drive").Corpora("user").Q(query).Do()
 	if err != nil {
-		tok = getTokenFromWeb(config)
-		saveToken(tokFile, tok)
-	}
-	return config.Client(context.Background(), tok)
-}
-
-// Request a token from the web, then returns the retrieved token.
-func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
-	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
-		"authorization code: \n%v\n", authURL)
-
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("Unable to read authorization code %v", err)
-	}
-
-	tok, err := config.Exchange(context.TODO(), authCode)
-	if err != nil {
-		log.Fatalf("Unable to retrieve token from web %v", err)
-	}
-	return tok
-}
-
-// Retrieves a token from a local file.
-func tokenFromFile(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
-	if err != nil {
+		fmt.Println("here")
 		return nil, err
 	}
-	defer f.Close()
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
-}
-
-// Saves a token to a file path.
-func saveToken(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
-	if err != nil {
-		log.Fatalf("Unable to cache oauth token: %v", err)
-	}
-	defer f.Close()
-	json.NewEncoder(f).Encode(token)
+	return r.Files, err
 }
 
 func Download(credentials_path string, folder string, destination string) error {
@@ -74,38 +24,47 @@ func Download(credentials_path string, folder string, destination string) error 
 	if err != nil {
 		return err
 	}
-	// TODO(stratus): Eval if a downgrade to drive.DriveFileScope is feasible.
-	config, err := google.ConfigFromJSON(b, drive.DriveReadonlyScope)
+	config, err := google.JWTConfigFromJSON(b, drive.DriveReadonlyScope)
 	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
+		log.Fatalf("Unable to parse client secret file to config: %v.", err)
 	}
-	client := getClient(config)
+	srv, err := drive.New(config.Client(oauth2.NoContext))
+	if err != nil {
+		return err
+	}
 
-	srv, err := drive.New(client)
+	q := fmt.Sprintf("name='%s' and mimeType='application/vnd.google-apps.folder'", folder)
+	fmt.Println(q)
+	d, err := search(srv, q)
 	if err != nil {
 		return err
 	}
-	r, err := srv.Files.List().PageSize(10).
-		Fields("nextPageToken, files(id, name)").Do()
+	if len(d) != 1 {
+		return fmt.Errorf("Expected 1 match for %s, got %d.", folder, len(d))
+	}
+
+	q = fmt.Sprintf("'%s' in parents", d[0].Id)
+	files, err := search(srv, q)
 	if err != nil {
 		return err
 	}
+
 	var errorCount int
-	if len(r.Files) == 0 {
+	if len(files) == 0 {
 		return fmt.Errorf("No files found in %s.", folder)
 	} else {
-		for _, i := range r.Files {
-			log.Printf("drive: %s (%s)\n", i.Name, i.Id)
-			res, err := srv.Files.Export(i.Id, "text/plain").Download()
+		for _, f := range files {
+			log.Printf("drive: %s (%s)\n", f.Name, f.Id)
+			res, err := srv.Files.Export(f.Id, "text/plain").Download()
 			if err != nil {
 				errorCount++
-				log.Printf("%q while downloading %s (%s)", err, i.Name, i.Id)
+				log.Printf("%q while downloading %s (%s)", err, f.Name, f.Id)
 			}
-			destFile := fmt.Sprintf("%s/%s", destination, i.Name)
+			destFile := fmt.Sprintf("%s/%s", destination, f.Name)
 			s, err := ioutil.ReadAll(res.Body)
 			if err != nil {
 				errorCount++
-				log.Printf("%q while reading %s", err)
+				log.Printf("%q while reading %s", err, f.Name)
 			}
 			err = ioutil.WriteFile(destFile, s, 0644)
 			if err != nil {

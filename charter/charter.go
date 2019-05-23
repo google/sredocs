@@ -1,6 +1,7 @@
 package charter
 
 import (
+	"bytes"
 	"github.com/google/sredocs/parser"
 	"log"
 )
@@ -26,7 +27,7 @@ var (
 		howDoWeInvestOurTimeStr, teamValuesStr, footerStr}
 )
 
-func Parse(fields []string, b []byte) (string, error) {
+func Parse(fields []string, b []byte) (*bytes.Buffer, error) {
 	log.Println("charter")
 	p := &parser.DefaultParser{}
 	csv, err := p.Parse(fields, b)
@@ -34,4 +35,13 @@ func Parse(fields []string, b []byte) (string, error) {
 		return csv, err
 	}
 	return csv, nil
+}
+
+func Save(b *bytes.Buffer, filename string) error {
+	p := &parser.DefaultParser{}
+	err := p.Save(b, filename)
+	if err != nil {
+		return err
+	}
+	return nil
 }
