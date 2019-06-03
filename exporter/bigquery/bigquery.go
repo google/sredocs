@@ -6,6 +6,7 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -42,7 +43,7 @@ func (d *dataset) exists() bool {
 	return false
 }
 
-func Upload(credentials_path, project, sourcePath, datasetName, table string) error {
+func Upload(credentials_path, project, sourcePath, datasetName, table string, truncate bool) error {
 	ctx := context.Background()
 	opts := option.WithCredentialsFile(credentials_path)
 	client, err := bigquery.NewClient(ctx, project, opts)
@@ -59,26 +60,34 @@ func Upload(credentials_path, project, sourcePath, datasetName, table string) er
 	if err != nil {
 		return err
 	}
-	// TODO(stratus): Turn per file errors non-fatal.
-	for _, sp := range files {
-		f, err := os.Open(filepath.Join(sourcePath, sp.Name()))
+	for i, sp := range files {
+		fn := filepath.Join(sourcePath, sp.Name())
+		f, err := os.Open(fn)
 		if err != nil {
-			return err
+			if len(files) > 1 {
+				log.Printf("Error %q while processing %s. Continuing...", err, fn)
+			} else {
+				return err
+			}
 		}
 		source := bigquery.NewReaderSource(f)
 		source.AutoDetect = true   // Allow BigQuery to determine schema.
 		source.SkipLeadingRows = 1 // CSV has a single header line.
-		// TODO(stratus): Add WRITE_TRUNCATE
 
 		d := &dataset{ctx: ctx, client: client, name: datasetName, location: "US"}
 		if !d.exists() {
+			log.Printf("Creating %s in %s", datasetName, project)
 			err := d.create()
 			if err != nil {
 				return err
 			}
 		}
 		loader := client.Dataset(datasetName).Table(tableName).LoaderFrom(source)
-
+		if truncate && i == 0 {
+			log.Printf("Truncate has been set, will override BigQuery table existing data (if any).")
+			loader.WriteDisposition = bigquery.WriteTruncate
+		}
+		log.Printf("Uploading %s to %s (%s).", fn, datasetName, tableName)
 		job, err := loader.Run(ctx)
 		if err != nil {
 			return err

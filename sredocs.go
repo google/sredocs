@@ -25,6 +25,7 @@ var (
 	bigqueryProject     = flag.String("upload_project", "", "GCP project with BigQuery enabled.")
 	bigqueryDataset     = flag.String("upload_dataset", "", "BigQuery dataset to be created/updated.")
 	bigqueryTable       = flag.String("upload_table", "", "BigQuery table to be created/updated.")
+	bigqueryTruncate    = flag.Bool("upload_truncate", false, "BigQuery existing table content will be overriden.")
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 		if *cloudCredentials == "" || *bigqueryProject == "" || *sourceToUpload == "" || *bigqueryDataset == "" || *bigqueryTable == "" {
 			log.Fatalf("cloud_credentials, upload_path, upload_project, upload_dataset and upload_table must be set in upload mode.")
 		}
-		err := bigquery.Upload(*cloudCredentials, *bigqueryProject, *sourceToUpload, *bigqueryDataset, *bigqueryTable)
+		err := bigquery.Upload(*cloudCredentials, *bigqueryProject, *sourceToUpload, *bigqueryDataset, *bigqueryTable, *bigqueryTruncate)
 		if err != nil {
 			log.Fatal(err)
 		}
