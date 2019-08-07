@@ -54,7 +54,6 @@ func (d *dataset) exists() bool {
 			return true
 		}
 	}
-	return false
 }
 
 func Upload(credentials_path, project, sourcePath, datasetName, table string, truncate bool) error {
