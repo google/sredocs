@@ -19,7 +19,7 @@ Here is how to use the download mode:
 1. Switch to Google Drive. 
 1. Give your service account address, e.g sredocs@...iam.gservice... view access to the folder with SRE docs.
 1. Pass the private key to sredocs via -download_credentials_path.
-1. Run sredocs -cloud_credentials=<creds.json> -download_folder=<docs_folder> -download_destination=<download_dir>
+1. Run sredocs -mode=download -cloud_credentials=<creds.json> -download_folder=<docs_folder> -download_destination=<download_dir>
 
 ## Parse
 
