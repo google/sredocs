@@ -37,7 +37,7 @@ type DefaultParser struct {
 
 // CompileRegex compiles regexes based on field names which may include a colon.
 func (p *DefaultParser) CompileRegex(fields []string) ([]*regexp.Regexp, error) {
-	var r []*regexp.Regexp
+	r := make([]*regexp.Regexp, len(fields))
 	for i, f := range fields {
 		/*
 			var nextField string
@@ -56,7 +56,7 @@ func (p *DefaultParser) CompileRegex(fields []string) ([]*regexp.Regexp, error) 
 		if err != nil {
 			return nil, err
 		}
-		r = append(r, re)
+		r[i] = re
 	}
 	return r, nil
 }
