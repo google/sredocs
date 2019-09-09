@@ -17,14 +17,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/google/sredocs/charter"
-	"github.com/google/sredocs/exporter/bigquery"
-	"github.com/google/sredocs/postmortem"
-	"github.com/google/sredocs/source/drive"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/sredocs/charter"
+	"github.com/google/sredocs/exporter/bigquery"
+	"github.com/google/sredocs/postmortem"
+	"github.com/google/sredocs/source/drive"
 )
 
 var (
@@ -75,6 +76,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		if len(files) == 0 {
+			log.Fatalf("No files found in %d", parsePath)
+		}
+
 		for _, f := range files {
 			content, err := ioutil.ReadFile(filepath.Join(*parsePath, f.Name()))
 			if err != nil {
