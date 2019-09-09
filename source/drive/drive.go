@@ -27,7 +27,6 @@ import (
 func search(srv *drive.Service, query string) ([]*drive.File, error) {
 	r, err := srv.Files.List().Spaces("drive").Corpora("user").Q(query).Do()
 	if err != nil {
-		fmt.Println("here")
 		return nil, err
 	}
 	return r.Files, err
