@@ -2,7 +2,7 @@
 
 This repository contains code for downloading (from Google Docs), parsing and uploading (to Google BigQuery) SRE related documents.
 
-It currently parses a specific charter and postmortem template that will be published separately.
+It currently parses postmortems using a single specific template [(sample)](https://docs.google.com/document/d/15Vyd2b3RYQZ3p6UztfbHWsd0fCzzwa42jwEczwFB8es/preview) and charter that will be published separately later.
 
 
 ## Download
