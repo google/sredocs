@@ -4,7 +4,6 @@ This repository contains code for downloading (from Google Docs), parsing and up
 
 It currently parses a specific charter and postmortem template that will be published separately.
 
-
 ## Download
 
 Here is how to use the download mode:
@@ -19,14 +18,14 @@ Here is how to use the download mode:
 1. Switch to Google Drive. 
 1. Give your service account address, e.g sredocs@...iam.gservice... view access to the folder with SRE docs.
 1. Pass the private key to sredocs via -download_credentials_path.
-1. Run sredocs -cloud_credentials=<creds.json> -download_folder=<docs_folder> -download_destination=<download_dir>
+1. Run `sredocs -mode=download -cloud_credentials=<creds.json> -download_folder=<docs_folder> -download_destination=<download_dir>`
 
 ## Parse
 
 Here is how to use the parse mode:
 
 
-1. Run sredocs -mode=parse -parse_kind=auto -parse_path=<download_dir> -parse_output_path=<parsed_dir>
+1. Run `sredocs -mode=parse -parse_kind=auto -parse_path=<download_dir> -parse_output_path=<parsed_dir>`
 
 ## Upload
 
@@ -37,8 +36,7 @@ Here is how to use the upload mode:
 1. Navigate to IAM & Admin. 
 1. Click on the Add button. 
 1. Search for your service account, e.g sredocs@... Give it the BigQuery Admin role.
-1. Run sredocs -mode=upload -cloud_credentials=<creds.json> -upload_path=<parsed_dir> -upload_project=<org:project> -upload_dataset=<sredocs> -upload_table=<sredocs_20190603> -upload_truncate=true
-
+1. Run `sredocs -mode=upload -cloud_credentials=<creds.json> -upload_path=<parsed_dir> -upload_project=<org:project> -upload_dataset=<sredocs> -upload_table=<sredocs_20190603> -upload_truncate=true`
 
 ## BYOP
 
