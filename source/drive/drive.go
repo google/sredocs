@@ -27,7 +27,6 @@ import (
 func search(srv *drive.Service, query string) ([]*drive.File, error) {
 	r, err := srv.Files.List().Spaces("drive").Corpora("user").Q(query).Do()
 	if err != nil {
-		fmt.Println("here")
 		return nil, err
 	}
 	return r.Files, err
@@ -66,27 +65,28 @@ func Download(credentials_path string, folder string, destination string) error 
 	var errorCount int
 	if len(files) == 0 {
 		return fmt.Errorf("No files found in %s.", folder)
-	} else {
-		for _, f := range files {
-			log.Printf("drive: %s (%s)\n", f.Name, f.Id)
-			res, err := srv.Files.Export(f.Id, "text/plain").Download()
-			if err != nil {
-				errorCount++
-				log.Printf("%q while downloading %s (%s)", err, f.Name, f.Id)
-			}
-			destFile := fmt.Sprintf("%s/%s", destination, f.Name)
-			s, err := ioutil.ReadAll(res.Body)
-			if err != nil {
-				errorCount++
-				log.Printf("%q while reading %s", err, f.Name)
-			}
-			err = ioutil.WriteFile(destFile, s, 0644)
-			if err != nil {
-				errorCount++
-				log.Printf("%q while writing %s", err, destFile)
-			}
+	}
+
+	for _, f := range files {
+		log.Printf("drive: %s (%s)\n", f.Name, f.Id)
+		res, err := srv.Files.Export(f.Id, "text/plain").Download()
+		if err != nil {
+			errorCount++
+			log.Printf("%q while downloading %s (%s)", err, f.Name, f.Id)
+		}
+		destFile := fmt.Sprintf("%s/%s", destination, f.Name)
+		s, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			errorCount++
+			log.Printf("%q while reading %s", err, f.Name)
+		}
+		err = ioutil.WriteFile(destFile, s, 0644)
+		if err != nil {
+			errorCount++
+			log.Printf("%q while writing %s", err, destFile)
 		}
 	}
+
 	if errorCount != 0 {
 		return fmt.Errorf("%d errors while downloading files", errorCount)
 	}

@@ -2,7 +2,7 @@
 
 This repository contains code for downloading (from Google Docs), parsing and uploading (to Google BigQuery) SRE related documents.
 
-It currently parses a specific charter and postmortem template that will be published separately.
+It currently parses postmortems using a single specific template [(sample)](https://docs.google.com/document/d/15Vyd2b3RYQZ3p6UztfbHWsd0fCzzwa42jwEczwFB8es/preview) and charter that will be published separately later.
 
 ## Download
 
@@ -23,7 +23,6 @@ Here is how to use the download mode:
 ## Parse
 
 Here is how to use the parse mode:
-
 
 1. Run `sredocs -mode=parse -parse_kind=auto -parse_path=<download_dir> -parse_output_path=<parsed_dir>`
 
