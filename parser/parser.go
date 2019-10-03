@@ -47,7 +47,7 @@ func (p *DefaultParser) CompileRegex(fields []string) ([]*regexp.Regexp, error) 
 				nextField = fields[i+1]
 			}
 		*/
-		fieldName := p.NamedGroup(fields[i])
+		fieldName := p.NamedGroup(f)
 		// TODO(stratus): This is the foundation for possibly two
 		// regexes - one for easy single line fields and another one for
 		// multi-field.
