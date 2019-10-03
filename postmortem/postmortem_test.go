@@ -38,6 +38,16 @@ func TestPM01(t *testing.T) {
 		{"severity", "High"},
 		{"impact", "Global pizza delivery outage"},
 		{"description", "Long description here."},
+		{"timetodetect", "10"},
+		{"timetoresponse", "15"},
+		{"timetomigrate", "60"},
+		{"slolink", "http://example.com/slodashboard"},
+		{"impactedproducts", "PizzaDelivery"},
+		{"firstknownimpactedservice", "PizzaBE"},
+		{"knownservicesblastradius", "PizzaFE"},
+		{"noteworthycustomerimpacted", "N/A"},
+		{"trigger", "Deploy"},
+
 		// TODO(stratus): Include all fields.
 	}
 
