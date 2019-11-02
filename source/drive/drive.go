@@ -47,7 +47,6 @@ func Download(credentials_path string, folder string, destination string) error 
 	}
 
 	q := fmt.Sprintf("name='%s' and mimeType='application/vnd.google-apps.folder'", folder)
-	fmt.Println(q)
 	d, err := search(srv, q)
 	if err != nil {
 		return err
