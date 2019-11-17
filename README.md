@@ -1,8 +1,10 @@
 # sredocs
 
-This repository contains code for downloading (from Google Docs), parsing and uploading (to Google BigQuery) SRE related documents.
+This repository contains code for downloading (from Google Docs), parsing and uploading (to Google BigQuery) SRE related documents such as postmortems and charters.
 
-It currently parses postmortems using a single specific template [(sample)](https://docs.google.com/document/d/15Vyd2b3RYQZ3p6UztfbHWsd0fCzzwa42jwEczwFB8es/preview) and charter that will be published separately later.
+Here is a [demo dashboard for incident analysis using Google Data Studio and BigQuery](http://datastudio.google.com/reporting/81474668-0f5e-409b-9508-51bd38a5321c). It contains an interactive report with information related to five dummy postmortems.
+
+sredocs currently parses postmortems using a single specific template [(sample)](https://docs.google.com/document/d/15Vyd2b3RYQZ3p6UztfbHWsd0fCzzwa42jwEczwFB8es/preview) and charter that will be published separately later.
 
 ## Download
 
