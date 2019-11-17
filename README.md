@@ -29,6 +29,7 @@ Here is how to use the download mode:
 
 Here is how to use the parse mode:
 
+1. Run `mkdir <parsed_dir>`
 1. Run `sredocs -mode=parse -parse_kind=auto -parse_path=<download_dir> -parse_output_path=<parsed_dir>`
 
 ## Upload
